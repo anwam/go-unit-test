@@ -13,7 +13,7 @@ func main() {
 		logger.Fatal(http.ListenAndServe("localhost:6060", nil).Error())
 	}()
 
-	studentServ := student.NewStudentService(lib.NewHttpClient(http.DefaultClient), logger)
+	studentServ := student.NewStudentService(lib.NewHttpClient(http.DefaultClient), logger, lib.NewTimer())
 	if std, err := studentServ.GetStudent(1); err != nil {
 		logger.Error(err.Error())
 	} else {

@@ -17,6 +17,7 @@ func TestNewStudentService(t *testing.T) {
 	type args struct {
 		req    lib.Requester
 		logger lib.Logger
+		timer  lib.Timer
 	}
 	tests := []struct {
 		name string
@@ -27,7 +28,7 @@ func TestNewStudentService(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewStudentService(tt.args.req, tt.args.logger); !reflect.DeepEqual(got, tt.want) {
+			if got := NewStudentService(tt.args.req, tt.args.logger, tt.args.timer); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewStudentService() = %v, want %v", got, tt.want)
 			}
 		})
@@ -40,7 +41,8 @@ func TestStudentService_GetStudent(t *testing.T) {
 	}
 	req := mocks.NewRequester(t)
 	logger := mocks.NewLogger(t)
-	stdSvc := NewStudentService(req, logger)
+	timer := mocks.NewTimer(t)
+	stdSvc := NewStudentService(req, logger, timer)
 	tests := []struct {
 		name    string
 		s       *StudentService

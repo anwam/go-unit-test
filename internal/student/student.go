@@ -3,25 +3,29 @@ package student
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/anwam/go-unit-test/lib"
 	"go.uber.org/zap"
 )
 
 type Student struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID           int       `json:"id"`
+	Name         string    `json:"name"`
+	RegisteredAt time.Time `json:"registered_at"`
 }
 
 type StudentService struct {
 	req    lib.Requester
 	logger lib.Logger
+	timer  lib.Timer
 }
 
-func NewStudentService(req lib.Requester, logger lib.Logger) *StudentService {
+func NewStudentService(req lib.Requester, logger lib.Logger, timer lib.Timer) *StudentService {
 	return &StudentService{
 		req:    req,
 		logger: logger,
+		timer:  timer,
 	}
 }
 
@@ -38,5 +42,6 @@ func (s *StudentService) GetStudent(id int) (*Student, error) {
 		s.logger.Error(err.Error(), zap.String("url", url), zap.Int("id", id), zap.String("method", "GetStudent"), zap.String("service", "StudentService"))
 		return nil, err
 	}
+	std.RegisteredAt = s.timer.Now()
 	return &std, nil
 }
